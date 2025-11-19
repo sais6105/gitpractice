@@ -1,0 +1,28 @@
+1. Kernel Parameter Tuning (sysctl)
+The Linux kernel's behavior is controlled by various parameters, which you can modify at runtime using the sysctl utility. For permanent changes, edit the /etc/sysctl.conf file or add new files in /etc/sysctl.d/.
+
+Here are some essential hardening settings:
+
+Parameter	Recommended Value	Description
+net.ipv4.ip_forward	0	Disables IP forwarding, preventing the system from acting as a router.
+net.ipv4.conf.all.accept_source_route	0	Disables acceptance of source-routed packets, which can be used for network manipulation.
+net.ipv4.conf.all.accept_redirects	0	Disables ICMP redirect acceptance, mitigating man-in-the-middle attacks.
+net.ipv4.conf.all.send_redirects	0	Disables ICMP send redirects, preventing the system from advertising itself as a router.
+net.ipv4.conf.all.rp_filter	1	Enables Reverse Path Filtering (RPF) (strict mode), helping protect against IP spoofing.
+net.ipv4.icmp_echo_ignore_broadcasts	1	Ignores ICMP echo requests sent to broadcast/multicast addresses, mitigating "Smurf" attacks.
+net.ipv4.tcp_syncookies	1	Enables TCP SYN Cookies, providing protection against SYN flood denial-of-service (DoS) attacks.
+kernel.dmesg_restrict	1	Restricts non-root users from using dmesg to view kernel log information, which can sometimes leak sensitive kernel addresses.
+kernel.kptr_restrict	1 or 2	Hides kernel pointer addresses in /proc and other interfaces from non-privileged users. 2 is more restrictive.
+fs.protected_hardlinks	1	Prevents the creation of hard links to files that the user doesn't own, mitigating certain attacks.
+fs.protected_symlinks	1	Prevents race condition attacks involving symbolic links in world-writable sticky directories.
+
+Export to Sheets
+To apply changes permanently:
+
+Add the desired entries to a new file like /etc/sysctl.d/99-security-hardening.conf.
+
+Run sudo sysctl -p /etc/sysctl.d/99-security-hardening.conf to load the changes immediately.
+
+
+
+https://www.cyberciti.biz/faq/linux-kernel-etcsysctl-conf-security-hardening/
